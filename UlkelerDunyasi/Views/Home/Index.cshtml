@@ -1,0 +1,94 @@
+﻿@model List<Ulke>
+
+@{
+    ViewData["Title"] = "Home Page";
+    string mesaj = (string)TempData["Mesaj"]!;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Ülkeler</h1>
+</div>
+
+<button data-id="0" data-ad="" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Yeni Ülke
+</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Ülke</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Ulke ulke in Model)
+        {
+            <tr>
+                <td>@ulke.Id</td>
+                <td>@ulke.Ad</td>
+                <td class="text-end">
+                    <button data-id="@ulke.Id" data-ad="@ulke.Ad" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pen"></i></button>
+                    <button onclick="sil(@ulke.Id,'@ulke.Ad')"class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form id="formSil" asp-controller="Home" asp-action="UlkeSil">
+    <input type="hidden" name="id" id="silId" value="" />
+    <input type="hidden" name="ad" id="silAd" value="" />
+</form>
+
+<form asp-controller="Home" asp-action="UlkeKaydet">
+    <input type="hidden" name="id" id="id" value="0" />
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ülke</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Ad</label>
+                        <input type="text" class="form-control" id="ad" name="ad" required maxlength="100">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+    {
+    <script>
+
+        const ulkeModal = document.getElementById("exampleModal");
+        ulkeModal.addEventListener("show.bs.modal", event => {
+            const btn = event.relatedTarget;
+            const id = btn.getAttribute("data-id");
+            const ad = btn.getAttribute("data-ad");
+            document.getElementById("id").value = id;
+            document.getElementById("ad").value = ad;
+            console.log(id, ad);
+        });
+
+
+        let mesaj = "@mesaj";
+        if (mesaj!="")
+            mesajGoster(mesaj);
+
+            function sil(id, ad){
+            document.getElementById("silId").value = id;
+            document.getElementById("silAd").value = ad;
+            document.getElementById("formSil").submit();
+            }
+
+    </script>
+}
